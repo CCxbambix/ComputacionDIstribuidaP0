@@ -22,45 +22,6 @@ typedef struct Grafica {
     Nodo* primero;
 } Grafica;
 
-//nomas pa imprimir
-void imprimir_grafica(Grafica* g) {
-    if (g == NULL || g->primero == NULL) {
-        printf("La gráfica está vacía.\n");
-        return;
-    }
-
-    // 1. Empezamos en el primer nodo de la lista global
-    Nodo* nodo_actual = g->primero;
-
-    printf("--- REPRESENTACIÓN DE LA GRÁFICA ---\n");
-    
-    while (nodo_actual != NULL) {
-        // Imprimimos el dato del nodo origen
-        printf("Nodo [%d] se conecta con: ", nodo_actual->dato);
-
-        // 2. Recorremos todas las aristas adyacentes de este nodo
-        Arista* arista_actual = nodo_actual->adyacentes;
-        
-        if (arista_actual == NULL) {
-            printf("Ninguno (Nodo aislado)");
-        }
-
-        while (arista_actual != NULL) {
-            // Imprimimos el dato del nodo destino de la arista
-            printf("%d ", arista_actual->destino->dato);
-            
-            // Avanzamos a la siguiente arista de la lista
-            arista_actual = arista_actual->siguiente;
-        }
-        
-        printf("\n"); // Salto de línea para el siguiente nodo
-
-        // Avanzamos al siguiente nodo de la lista global de la gráfica
-        nodo_actual = nodo_actual->siguiente;
-    }
-    printf("------------------------------------\n");
-}
-
 /* =========================
    COLA
    ========================= */
@@ -124,7 +85,7 @@ Nodo* dequeue(Cola *c)
 
     Nodo *temp = c->frente;
 
-    Nodo* dato = temp->datos;
+    Nodo *dato = temp->datos;
 
     c->frente = temp->siguiente;
 
@@ -138,14 +99,20 @@ Nodo* dequeue(Cola *c)
     return dato;
 }
 
-void BFS(Grafica *g){
+void BFS(Grafica* g){
     Cola cola;
     inicializarCola(&cola);
     Nodo *first = g->primero;
     first->visitado=1;
+    printf("%d\n",first->dato);
+    printf("cola vacia");
+    printf("%d\n",colaVacia(&cola));
     enqueue(&cola,first);
-    while (1==colaVacia(&cola)){
-        Nodo *v = cola.frente;
+    printf("cola vacian?t");
+    printf("%d\n",colaVacia(&cola));
+    while (0==colaVacia(&cola)){
+        Nodo *c = cola.frente;
+        Nodo *v = c->datos;
         dequeue(&cola);
         Arista *aristaActual = v->adyacentes;
         for(int i=1;i<=v->numAristas;i++){
@@ -153,7 +120,7 @@ void BFS(Grafica *g){
             aristaActual->visited = 1;
             Nodo *w = aristaActual->destino;
             if(0==w->visitado){
-              printf("%d",w->dato);
+              printf("%d\n",w->dato);
               enqueue(&cola,w);
               w->visitado =1;
             }
@@ -162,6 +129,23 @@ void BFS(Grafica *g){
         }
     }
 }
+
+void DFS(Nodo* primero){
+    printf("%d\n",primero->dato);
+    primero->visitado=1;
+    Arista *e = primero->adyacentes;
+    for(int i=1; i<=primero->numAristas;i++){
+        if(0==e->visited){
+            e->visited = 1;
+            Nodo *w = e->destino;
+            if(0==w->visitado){
+                DFS(w);
+            }
+        }
+        e= e->siguiente;
+    }
+}
+
 int main(){
   //Creacion de nodos
     Nodo* nodoA = (Nodo*)malloc(sizeof(Nodo));
@@ -254,8 +238,10 @@ int main(){
     deDaE->siguiente = nodoD->adyacentes;
     nodoD->adyacentes = deDaE;
 
-    /*imprimir_grafica(&grafica);*/
+    /*Ejecucion de los metodos, por favor comente la funcion que no usara para probar la otra*/
     BFS(&grafica);
+    //DFS(nodoA);
+
     return 0;
     
 }
