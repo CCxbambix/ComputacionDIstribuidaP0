@@ -1,0 +1,77 @@
+\documentclass{article}
+\input{conf.tex}
+\setlength{\headheight}{14.49998pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+\begin{document}
+    \clearpage
+    \pagestyle{fancy}
+    \renewcommand{\headrulewidth}{0.4pt}
+    \renewcommand{\footrulewidth}{0.4pt}
+    \lhead{\footnotesize{\scshape Practica 0}}
+    \rhead{\scshape{\footnotesize \textbf{Monroy Flores Alexa Sofia, Salazar Enriquez Luis Alberto}}}
+    \lfoot{\scshape{\footnotesize Computación Distribuida}}
+    \rfoot{\scshape{\footnotesize Facultad de Ciencias}}
+    \cfoot{\thepage}
+    \section{Descripción general de la práctica}
+    Una descripción general de como se desarrolló la práctica:..........................para lo de la pila y cola xd.........................
+    Para la parte de la gráfica, se implementaron tres estructuras dentro del archivo Grafica.c : \texttt{Nodo}, \texttt{Arista} y \texttt{Gráfica}.\\
+    Se hizo uso de malloc() para poder crear los nodos y aristas de la gráfica. Se hizo una implementación de gráfica no dirigida 
+    haciendo que cada nodo sea adyacente a su vecino y que su vecino esté conectado también al otro nodo.
+    \subsection{Análisis de implementación de algoritmos}
+    Se implementaron los algoritmos de búsqueda que fueron BFS y DFS.\\
+    Para BFS se hizo uso de la pila implementada anteriormente para ir almacenando los nodos de la gráfica.\\
+    Pseudocódigo en el que nos basamos para implementar el algoritmo:
+    \begin{algorithm}[H]
+        \caption{BFS}\label{alg:cap}
+        \begin{algorithmic}
+            \State Queue $Q$
+            \State s.visited = true
+            \State Q.insert(s);
+            \While{not Q.isEmpty()}
+                \State v=Q.delete();
+                \For{all e= $vw\in E(G)$}
+                    \If{not e.visited}
+                        \State e.visited=true
+                        \If{not w.visited}
+                            \State e.inTree=true
+                            \State w.visited=true
+                            \State Q.insert(w)
+                        \Else
+                            \State e.inTree=false
+                        \EndIf
+                    \EndIf
+                \EndFor
+            \EndWhile
+        \end{algorithmic}
+    \end{algorithm}
+    Para DFS 
+    \begin{algorithm}[H]
+        \caption{DFS}\label{alg:cap}
+        \begin{algorithmic}
+            \State si
+        \end{algorithmic}
+    \end{algorithm}
+    \subsection{Comentarios o aclaraciones}
+    \begin{itemize}
+        \item En la parte de métricas, para obtener el registro del tiempo de ejecución se hicieron 5 ejecuciones por cada número 
+        de nodos y se obtuvo el promedio de dicho tiempo en ms (microsegundos).
+    \end{itemize}
+    \section{Pruebas de rendimiento}
+    \begin{table}[H]
+        \begin{center}
+            \begin{tabular}{|c|c|c|c|c|}\hline
+                \textbf{Número de nodos} & \textbf{Tiempo de ejecución} & \textbf{Speedup} & \textbf{Eficiencia} & \textbf{Fracción Serial} \\ 
+                 $n$ & $T(n)$ & $S(n)$ & $E(n)$ & $F(n)$ \\ \hline
+                 1 & 580104 & 1 & 1 & indefinido \\ \hline
+                 2 & 568379 & 0.979788107 & 0.489894054 & 1.041257682 \\ \hline
+                 3 & 588310 & 1.014145739 & 0.33804858 & 0.979077358 \\ \hline
+                 4 & 616103 & 1.062056114 & 0.177009352 & 0.922093113 \\ \hline
+                 6 & 914530 & 1.576493181 & 0.262748863 & 0.561183121 \\ \hline
+                 8 & 1168706 & 2.014649097 & 0.251831137 & 0.424416406 \\ \hline
+                 10 & 1410445 & 2.431365755 & 0.243136576 & 0.345879413 \\ \hline
+                 20 & 2856572 & 4.924241171 & 0.246212059 & 0.161133658 \\ \hline
+            \end{tabular}
+        \end{center}
+    \end{table}
+\end{document}
