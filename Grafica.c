@@ -1,14 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/*Implementación de gráfica*/
 typedef struct Nodo Nodo;
-
+/*Arista de la grafica */
 typedef struct Arista{
     int visited;
     Nodo* destino;
     struct Arista* siguiente;
 }Arista;
 
+/*Nodo de la grafica, tambien es usado este Nodo para
+la estructura de Cola y Pila */
 struct Nodo{
     int visitado;
     int dato;
@@ -18,13 +21,77 @@ struct Nodo{
     Nodo* datos;
 };
 
+/*Grafica*/
 typedef struct Grafica {
     Nodo* primero;
 } Grafica;
 
-/* =========================
-   COLA
-   ========================= */
+/*Implementacion de pila */
+typedef struct
+{
+    Nodo *tope;
+} Pila;
+
+void inicializarPila(Pila *p)
+{
+    p->tope = NULL;
+}
+
+int pilaVacia(Pila *p)
+{
+    return p->tope == NULL;
+}
+
+void push(Pila *p, Nodo* dato)
+{
+    Nodo *nuevo = malloc(sizeof(Nodo));
+
+    if (nuevo == NULL)
+    {
+        printf("Error reservando memoria\n");
+        return;
+    }
+
+    nuevo->datos = dato;
+    nuevo->siguiente = p->tope;
+
+    p->tope = nuevo;
+}
+
+Nodo* pop(Pila *p)
+{
+    if (pilaVacia(p))
+    {
+        printf("La pila está vacía\n");
+        return NULL;
+    }
+
+    Nodo *temp = p->tope;
+
+    Nodo *dato = temp->datos;
+
+    p->tope = temp->siguiente;
+
+    //free(temp);
+
+    return dato;
+}
+
+void imprimirPila(Pila *p)
+{
+    Nodo *actual = p->tope;
+    printf("Pila: ");
+    while (actual != NULL)
+    {
+        Nodo *nodoActual = actual->datos;
+        printf("%d ", nodoActual->dato);
+        actual = actual->siguiente;
+    }
+
+    printf("\n");
+}
+
+/* Implementación de Cola */
 
 typedef struct
 {
@@ -32,22 +99,17 @@ typedef struct
     Nodo *final;
 } Cola;
 
-
-/* Inicializa la cola */
 void inicializarCola(Cola *c)
 {
     c->frente = NULL;
     c->final = NULL;
 }
 
-
-/* Verifica si esta vacia */
 int colaVacia(Cola *c)
 {
     return c->frente == NULL;
 }
 
-/* ENQUEUE */
 void enqueue(Cola *c, Nodo* dato)
 {
     Nodo *nuevo = malloc(sizeof(Nodo));
@@ -73,8 +135,6 @@ void enqueue(Cola *c, Nodo* dato)
     }
 }
 
-
-/* DEQUEUE */
 Nodo* dequeue(Cola *c)
 {
     if (colaVacia(c))
@@ -99,17 +159,26 @@ Nodo* dequeue(Cola *c)
     return dato;
 }
 
+void imprimirCola(Cola *c)
+{
+    Nodo *actual = c->frente;
+    printf("Cola: ");
+    while (actual != NULL)
+    {
+        Nodo *nodoActual = actual->datos;
+        printf("%d ", nodoActual->dato);
+        actual = actual->siguiente;
+    }
+    printf("\n");
+}
+
 void BFS(Grafica* g){
     Cola cola;
     inicializarCola(&cola);
     Nodo *first = g->primero;
     first->visitado=1;
     printf("%d\n",first->dato);
-    printf("cola vacia");
-    printf("%d\n",colaVacia(&cola));
     enqueue(&cola,first);
-    printf("cola vacian?t");
-    printf("%d\n",colaVacia(&cola));
     while (0==colaVacia(&cola)){
         Nodo *c = cola.frente;
         Nodo *v = c->datos;
@@ -159,6 +228,18 @@ int main(){
     Nodo* nodoE = (Nodo*)malloc(sizeof(Nodo));
     nodoE->dato = 5; nodoE->adyacentes = NULL; nodoE->visitado = 0;
 
+    /*Segunda grafica*/
+    Nodo* nodoF = (Nodo*)malloc(sizeof(Nodo));
+    nodoF->dato = 6; nodoF->adyacentes = NULL; nodoF->visitado = 0;
+    Nodo* nodoG = (Nodo*)malloc(sizeof(Nodo));
+    nodoG->dato = 7; nodoG->adyacentes = NULL; nodoG->visitado = 0;
+    Nodo* nodoH = (Nodo*)malloc(sizeof(Nodo));
+    nodoH->dato = 8; nodoH->adyacentes = NULL; nodoH->visitado = 0;
+    Nodo* nodoI = (Nodo*)malloc(sizeof(Nodo));
+    nodoI->dato = 9; nodoI->adyacentes = NULL; nodoI->visitado = 0;
+    Nodo* nodoJ = (Nodo*)malloc(sizeof(Nodo));
+    nodoJ->dato = 10; nodoJ->adyacentes = NULL; nodoJ->visitado = 0;
+
   //Creacion de grafica
     Grafica grafica;
     grafica.primero = nodoA;
@@ -172,6 +253,18 @@ int main(){
     nodoC->numAristas = 3;
     nodoD->numAristas = 2;
     nodoE->numAristas = 2;
+
+    /*Segunda grafica*/
+    nodoF->siguiente = nodoG;
+    nodoG->siguiente = nodoH;
+    nodoH->siguiente = nodoI;
+    nodoI->siguiente = nodoJ;
+    nodoJ->siguiente = NULL;
+    nodoF->numAristas = 1;
+    nodoG->numAristas = 2;
+    nodoH->numAristas = 3;
+    nodoI->numAristas = 2;
+    nodoJ->numAristas = 2;
 
   //Arista A-B
     Arista* deAaB = (Arista*)malloc(sizeof(Arista));
@@ -238,9 +331,129 @@ int main(){
     deDaE->siguiente = nodoD->adyacentes;
     nodoD->adyacentes = deDaE;
 
+    /*Segunda grafica*/
+    //Arista F-G
+    Arista* deFaG = (Arista*)malloc(sizeof(Arista));
+    deFaG->visited = 0;
+    deFaG->destino = nodoG;
+    deFaG->siguiente = nodoF->adyacentes;
+    nodoF->adyacentes = deFaG;
+
+    Arista* deGaF = (Arista*)malloc(sizeof(Arista));
+    deGaF->visited = 0;
+    deGaF->destino = nodoF;
+    deGaF->siguiente = nodoG->adyacentes;
+    nodoG->adyacentes = deGaF;
+
+  //Arista G-H
+    Arista* deGaH = (Arista*)malloc(sizeof(Arista));
+    deGaH->visited = 0;
+    deGaH->destino = nodoH;
+    deGaH->siguiente = nodoG->adyacentes;
+    nodoG->adyacentes = deGaH;
+
+    Arista* deHaG = (Arista*)malloc(sizeof(Arista));
+    deHaG->visited=0;
+    deHaG->destino = nodoG;
+    deHaG->siguiente = nodoH->adyacentes;
+    nodoH->adyacentes = deHaG;
+
+  //Arista H-I
+    Arista* deHaI = (Arista*)malloc(sizeof(Arista));
+    deHaI->visited=0;
+    deHaI->destino = nodoI;
+    deHaI->siguiente = nodoH->adyacentes;
+    nodoH->adyacentes = deHaI;
+
+    Arista* deIaH = (Arista*)malloc(sizeof(Arista));
+    deIaH->visited=0;
+    deIaH->destino = nodoH;
+    deIaH->siguiente = nodoI->adyacentes;
+    nodoI->adyacentes = deIaH;
+
+  //Arista H-J
+    Arista* deHaJ = (Arista*)malloc(sizeof(Arista));
+    deHaJ->visited=0;
+    deHaJ->destino = nodoJ;
+    deHaJ->siguiente = nodoH->adyacentes;
+    nodoH->adyacentes = deHaJ;
+
+    Arista* deJaH = (Arista*)malloc(sizeof(Arista));
+    deJaH->visited=0;
+    deJaH->destino = nodoH;
+    deJaH->siguiente = nodoJ->adyacentes;
+    nodoJ->adyacentes = deJaH;
+
+  //Arista J-I
+    Arista* deJaI = (Arista*)malloc(sizeof(Arista));
+    deJaI->visited=0;
+    deJaI->destino = nodoI;
+    deJaI->siguiente = nodoJ->adyacentes;
+    nodoJ->adyacentes = deJaI;
+
+    Arista* deIaJ = (Arista*)malloc(sizeof(Arista));
+    deIaJ->visited=0;
+    deIaJ->destino = nodoJ;
+    deIaJ->siguiente = nodoI->adyacentes;
+    nodoI->adyacentes = deIaJ;
+
+    /*Creacion de Pila para su prueba*/
+    Pila pila;
+    inicializarPila(&pila);
+    Nodo* nodoP1 = (Nodo*)malloc(sizeof(Nodo));
+    nodoP1->dato = 11;
+    Nodo* nodoP2 = (Nodo*)malloc(sizeof(Nodo));
+    nodoP2->dato = 12;
+    Nodo* nodoP3 = (Nodo*)malloc(sizeof(Nodo));
+    nodoP3->dato = 13;
+
+    Cola cola;
+    inicializarCola(&cola);
+    Nodo* nodoC1 = (Nodo*)malloc(sizeof(Nodo));
+    nodoC1->dato = 14;
+    Nodo* nodoC2 = (Nodo*)malloc(sizeof(Nodo));
+    nodoC2->dato = 15;
+    Nodo* nodoC3 = (Nodo*)malloc(sizeof(Nodo));
+    nodoC3->dato = 16;
+
     /*Ejecucion de los metodos, por favor comente la funcion que no usara para probar la otra*/
+    printf("Ejecucion de BFS\n");
     BFS(&grafica);
-    //DFS(nodoA);
+    printf("Ejecucion de DFS\n");
+    DFS(nodoF);
+    printf("Prueba de Pila\n");
+    printf("Pila Vacia\n");
+    printf("%d\n", pilaVacia(&pila));
+    printf("Metemos elementos a la pila\n");
+    push(&pila,nodoP1);
+    push(&pila,nodoP2);
+    push(&pila,nodoP3);
+    printf("Pila no vacia\n");
+    printf("%d\n", pilaVacia(&pila));
+    printf("Imprimimos la Pila\n");
+    imprimirPila(&pila);
+    printf("sacamos un elemento de la pila\n");
+    pop(&pila);
+    imprimirPila(&pila);
+    printf("Prueba de Cola\n");
+    printf("Cola Vacia\n");
+    printf("%d\n", colaVacia(&cola));
+    printf("Metemos elementos a la cola\n");
+    enqueue(&cola,nodoC1);
+    enqueue(&cola,nodoC2);
+    enqueue(&cola,nodoC3);
+    printf("Cola no vacia\n");
+    printf("%d\n", colaVacia(&cola));
+    printf("Imprimimos la Cola\n");
+    imprimirCola(&cola);
+    printf("sacamos un elemento de la Cola\n");
+    dequeue(&cola);
+    imprimirCola(&cola);
+    
+    
+
+
+
 
     return 0;
     
